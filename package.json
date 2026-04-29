@@ -1,0 +1,41 @@
+{
+  "name": "promptvault",
+  "displayName": "PromptVault — 113 AI prompts",
+  "description": "Drop-in prompts for ChatGPT / Claude / Cursor / Midjourney with {{variable}} substitution. Access via command palette, fill blanks, copy to clipboard. Fully offline.",
+  "version": "1.0.0",
+  "publisher": "snake-sun",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other", "Snippets"],
+  "keywords": ["ai", "prompt", "chatgpt", "claude", "cursor", "midjourney", "template"],
+  "icon": "icons/icon-128.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiejuefuyou/promptvault-vscode"
+  },
+  "homepage": "https://jiejuefuyou.github.io/prompts.html",
+  "main": "./src/extension.js",
+  "activationEvents": ["onCommand:promptvault.open"],
+  "contributes": {
+    "commands": [
+      {
+        "command": "promptvault.open",
+        "title": "PromptVault: Pick a Prompt",
+        "category": "PromptVault"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "promptvault.open",
+        "key": "ctrl+shift+p",
+        "mac": "cmd+shift+p",
+        "when": "false"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "echo 'no build step required'"
+  },
+  "license": "MIT"
+}
