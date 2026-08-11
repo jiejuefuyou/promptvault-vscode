@@ -1,11 +1,12 @@
 {
   "name": "promptvault",
-  "displayName": "PromptVault — 113 AI prompts",
-  "description": "Drop-in prompts for ChatGPT / Claude / Cursor / Midjourney with {{variable}} substitution. Access via command palette, fill blanks, copy to clipboard. Fully offline.",
-  "version": "1.0.0",
+  "displayName": "PromptVault — local AI prompt library",
+  "description": "Pick a bundled prompt, fill typed {{variables}}, then copy, insert, or preview it. No account, telemetry, or remote prompt service.",
+  "version": "1.1.0",
   "publisher": "snake-sun",
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.80.0",
+    "node": ">=18"
   },
   "categories": ["Other", "Snippets"],
   "keywords": ["ai", "prompt", "chatgpt", "claude", "cursor", "midjourney", "template"],
@@ -16,26 +17,50 @@
   },
   "homepage": "https://jiejuefuyou.github.io/prompts.html",
   "main": "./src/extension.js",
-  "activationEvents": ["onCommand:promptvault.open"],
+  "extensionKind": ["ui"],
+  "activationEvents": [
+    "onCommand:promptvault.open",
+    "onCommand:promptvault.insert",
+    "onCommand:promptvault.preview",
+    "onCommand:promptvault.reload"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
   "contributes": {
     "commands": [
       {
         "command": "promptvault.open",
-        "title": "PromptVault: Pick a Prompt",
+        "title": "Pick and Copy Prompt",
         "category": "PromptVault"
-      }
-    ],
-    "keybindings": [
+      },
       {
-        "command": "promptvault.open",
-        "key": "ctrl+shift+p",
-        "mac": "cmd+shift+p",
-        "when": "false"
+        "command": "promptvault.insert",
+        "title": "Pick and Insert Prompt",
+        "category": "PromptVault"
+      },
+      {
+        "command": "promptvault.preview",
+        "title": "Pick and Preview Prompt",
+        "category": "PromptVault"
+      },
+      {
+        "command": "promptvault.reload",
+        "title": "Reload Bundled Prompt Library",
+        "category": "PromptVault"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "echo 'no build step required'"
+    "vscode:prepublish": "npm run verify",
+    "test": "node --test tests/*.test.cjs",
+    "lint": "node --check src/core.js && node --check src/extension.js && node scripts/verify-extension.cjs",
+    "verify": "npm run lint && npm test"
   },
   "license": "MIT"
 }
