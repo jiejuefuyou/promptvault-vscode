@@ -38,7 +38,7 @@ PromptVault supports the same placeholder forms as the iOS app:
 
 ## Install from source
 
-1. Clone or download the repository.
+1. Clone or download this repository.
 2. Open it in VS Code.
 3. Press `F5` to launch an Extension Development Host.
 
@@ -61,12 +61,30 @@ The runtime reads its bundled data through `vscode.workspace.fs`; it does not im
 ```text
 src/core.js       pure validation, typed-variable parsing and rendering
 src/extension.js  VS Code command and editor adapter
-data/prompts.json bundled prompt library
+data/prompts.json generated prompt library
 tests/            dependency-free Node tests
 scripts/          package and runtime contracts
 ```
 
 Development-only tests, scripts, and workflow files are excluded from the VSIX by `.vscodeignore`.
+
+## Corpus provenance
+
+The current packaged snapshot contains 160 prompts projected from:
+
+```text
+jiejuefuyou/promptvault-wechat-miniprogram
+commit 2f0ed5f319b2475fc3375f11cd0f43cb998bb39d
+```
+
+`autoapp-toolkit` run `31464066016` first proved that the previous 113-prompt Chrome and VS Code bundles shared identical content with the canonical corpus and were only missing the same 47 records. The raw canonical projection then preserved full-width punctuation, line content, and Unicode composition, produced:
+
+```text
+data/prompts.json sha256
+f0ac21ec4bd9905e2d49504cc139544397159224333a35aba08e0cab820340f5
+```
+
+and passed this repository's real-bundle verification before commit. Comparison normalization is never written back into prompt content.
 
 ## Verify
 
