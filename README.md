@@ -1,75 +1,90 @@
-# PromptVault — VSCode Extension
+# PromptVault for VS Code
 
-> 113 AI prompts in your command palette. Pick → fill `{{variable}}` → copy to clipboard.
+A local prompt library in the Command Palette. Pick a bundled prompt, fill `{{variables}}`, then copy it, insert it at the current selections, or open a preview document.
 
-## What it does
+## Commands
 
-`Cmd/Ctrl + Shift + P` → type "PromptVault: Pick a Prompt" → select → fill blanks → done. The prompt is on your clipboard, ready to paste into ChatGPT / Claude / Cursor / wherever.
+Open the Command Palette and run one of:
 
-## Why VSCode-native
+- **PromptVault: Pick and Copy Prompt**
+- **PromptVault: Pick and Insert Prompt**
+- **PromptVault: Pick and Preview Prompt**
+- **PromptVault: Reload Bundled Prompt Library**
 
-If you're using Cursor / Claude Code / Continue.dev / Copilot Chat in VSCode and find yourself rewriting the same prompts daily, this extension turns 30 seconds of "navigate to my prompt note, copy, paste" into 3 seconds.
+The searchable picker reads its count from `data/prompts.json`; marketplace and UI copy no longer depend on a hard-coded library size.
 
-## Install
+## Variable syntax
 
-### From source (today)
+PromptVault supports the same placeholder forms as the iOS app:
 
-```sh
-git clone https://github.com/jiejuefuyou/promptvault-vscode.git
-cd promptvault-vscode
-# In VSCode:
-# 1. Cmd+Shift+P → "Extensions: Install from VSIX..." (if .vsix available)
-# OR
-# 2. Open the repo folder, press F5 → opens extension in dev host
-# OR
-# 3. Symlink to ~/.vscode/extensions/promptvault and reload
+```text
+{{name}}
+{{language:string=Japanese}}
+{{count:int=5}}
+{{notes:multiline=}}
 ```
 
-### From Marketplace (coming soon)
+- Defaults are prefilled.
+- Integer fields reject non-whole-number input.
+- For a multiline field, enter literal `\n` where a line break should appear.
+- Submit an empty required field to preserve its placeholder.
+- Escape cancels the whole command instead of silently producing a partial result.
 
-The extension will be published to the [VSCode Marketplace](https://marketplace.visualstudio.com/) — listing pending publisher account verification.
+## Insert and preview behavior
 
-[autoappnotes Substack](https://autoappnotes.substack.com) will announce.
+**Insert** replaces every active selection. With multiple cursors, the rendered prompt is inserted at each selection. When no text editor is active, PromptVault offers to copy instead.
 
-## How it works
+**Preview** opens an untitled Markdown document containing the rendered result. It does not modify the current file.
 
-1. **Pick a prompt**: command palette opens a searchable list of 113 prompts. Search by title, tags, or body content.
-2. **Fill variables**: if the prompt has `{{variables}}`, an input box opens for each one. Press Esc to skip a variable (the placeholder stays in the output).
-3. **Copy**: the rendered prompt is copied to your clipboard. A status notification confirms.
+## Install from source
 
-## Privacy
+1. Clone or download the repository.
+2. Open it in VS Code.
+3. Press `F5` to launch an Extension Development Host.
 
-- ✅ Zero networking — the 113 prompts are bundled in `data/prompts.json` (53 KB)
-- ✅ Zero data collection — your variable inputs never leave your machine
-- ✅ Zero analytics SDKs
+For a packaged build, install the resulting `.vsix` through **Extensions: Install from VSIX**.
 
-The only VSCode API the extension uses:
-- `vscode.commands.registerCommand` — register the slash command
-- `vscode.window.showQuickPick` / `showInputBox` — UI
-- `vscode.env.clipboard.writeText` — copy
+## Privacy and trust
 
-You can audit the entire extension by reading `src/extension.js` (~80 lines).
+- No account or developer server.
+- No analytics, telemetry, ads, remote scripts, or network client.
+- Prompt data is packaged in `data/prompts.json`.
+- Variable values are held only for the current command.
+- Clipboard writes occur only after the user invokes the copy command or accepts the copy fallback.
+- The extension declares support for untrusted and virtual workspaces because it does not read workspace files.
+- `extensionKind: ["ui"]` keeps clipboard and Quick Input behavior on the local UI side when using Remote SSH, Dev Containers, or Codespaces.
 
-## Updates
+The runtime reads its bundled data through `vscode.workspace.fs`; it does not import Node `fs`, `path`, network, or process modules.
 
-When the iOS sister app's bundled prompts update, regenerate `data/prompts.json` from [autoapp-prompt-vault](https://github.com/jiejuefuyou/autoapp-prompt-vault):
+## Architecture
 
-```sh
-cp ../repos/autoapp-prompt-vault/PromptVault/Resources/starter_prompts.json data/prompts.json
-git commit -am "data: sync prompts from upstream"
+```text
+src/core.js       pure validation, typed-variable parsing and rendering
+src/extension.js  VS Code command and editor adapter
+data/prompts.json bundled prompt library
+tests/            dependency-free Node tests
+scripts/          package and runtime contracts
 ```
 
-## Sister projects
+Development-only tests, scripts, and workflow files are excluded from the VSIX by `.vscodeignore`.
 
-- 🌐 [Web edition](https://jiejuefuyou.github.io/prompts.html) — same prompts in the browser
-- 🪟 [Chrome extension](https://github.com/jiejuefuyou/promptvault-chrome) — same prompts in browser toolbar
-- 📱 [iOS app](https://github.com/jiejuefuyou/autoapp-prompt-vault) — same prompts on iPhone (awaiting App Store)
-- 📄 [Markdown pack](https://github.com/jiejuefuyou/autoapp-toolkit) — bundled in autoapp-toolkit
+## Verify
+
+No third-party runtime or test dependencies are required:
+
+```bash
+npm run verify
+```
+
+The verification gate checks:
+
+- prompt JSON shape and exact duplicate records
+- command contribution/activation/registration parity
+- typed variables, defaults, multiline escapes and integer validation
+- no runtime filesystem, network, child-process or dynamic-code access
+- trusted/virtual workspace declarations and UI extension placement
+- VSIX development-file exclusions
 
 ## License
 
-Code: MIT. Prompt content: personal use unrestricted; commercial redistribution by permission.
-
-## Author
-
-[@snake_sun on dev.to](https://dev.to/snake_sun) · [autoappnotes Substack](https://autoappnotes.substack.com)
+Code is MIT. Bundled prompt content is available for personal use; commercial redistribution requires permission.
