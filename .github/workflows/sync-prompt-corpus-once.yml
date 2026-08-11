@@ -5,6 +5,11 @@ on:
     branches: [agent/command-flow-v1]
     paths:
       - ".github/workflows/sync-prompt-corpus-once.yml"
+  pull_request:
+    branches: [agent/command-flow-v1]
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".github/corpus-sync-trigger"
 
 permissions:
   contents: write
