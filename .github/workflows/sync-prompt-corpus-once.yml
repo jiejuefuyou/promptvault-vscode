@@ -69,15 +69,31 @@ jobs:
             throw new Error(`unterminated array after: ${marker}`);
           }
 
+          function normalizeText(value) {
+            const lines = String(value ?? '')
+              .normalize('NFKC')
+              .replace(/\r\n/g, '\n')
+              .replace(/\r/g, '\n')
+              .split('\n')
+              .map((line) => line.trimEnd());
+            while (lines.length && lines[0] === '') lines.shift();
+            while (lines.length && lines[lines.length - 1] === '') lines.pop();
+            return lines.join('\n');
+          }
+
+          function normalizeTag(value) {
+            return normalizeText(value).split(/\s+/u).filter(Boolean).join(' ');
+          }
+
           const canonicalSource = fs.readFileSync('.canonical-wechat/utils/prompts.js', 'utf8');
           const [start, end] = bounds(canonicalSource, 'module.exports =');
           const canonical = JSON.parse(canonicalSource.slice(start, end));
           if (canonical.length !== 160) throw new Error(`expected 160 canonical prompts, found ${canonical.length}`);
           const projected = canonical.map((raw, index) => {
-            const title = String(raw.title || '').trim();
-            const body = String(raw.body || '').trim();
+            const title = normalizeText(raw.title);
+            const body = normalizeText(raw.body);
             const tags = Array.isArray(raw.tags)
-              ? [...new Set(raw.tags.map((tag) => String(tag).trim()).filter(Boolean))]
+              ? [...new Set(raw.tags.map(normalizeTag).filter(Boolean))]
               : [];
             if (!title || !body) throw new Error(`canonical prompt ${index + 1} lacks title/body`);
             return { title, body, tags };
