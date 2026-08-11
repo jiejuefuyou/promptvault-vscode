@@ -62,8 +62,8 @@ The runtime reads its bundled data through `vscode.workspace.fs`; it does not im
 src/core.js       pure validation, typed-variable parsing and rendering
 src/extension.js  VS Code command and editor adapter
 data/prompts.json generated prompt library
-tests/            dependency-free Node tests
-scripts/          package and runtime contracts
+tests/            dependency-free core tests plus Extension Host integration
+scripts/          package/runtime contracts and the VS Code matrix runner
 ```
 
 Development-only tests, scripts, and workflow files are excluded from the VSIX by `.vscodeignore`.
@@ -88,11 +88,20 @@ and passed this repository's real-bundle verification before commit. Comparison 
 
 ## Verify
 
-No third-party runtime or test dependencies are required:
+The shipping extension has no third-party runtime dependencies. Install the locked development tools, then run the portable contracts:
 
 ```bash
+npm ci
 npm run verify
 ```
+
+For real Extension Development Host coverage on VS Code 1.80.2 and the current stable release:
+
+```bash
+npm run test:extension-host
+```
+
+That matrix activates the real development extension and exercises command registration, the 160-record bundled library, copy, whole-command cancellation, multi-selection insert, Markdown preview, no-editor copy fallback, reload, and clipboard restoration.
 
 The verification gate checks:
 

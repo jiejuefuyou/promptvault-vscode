@@ -8,8 +8,19 @@
     "vscode": "^1.80.0",
     "node": ">=18"
   },
-  "categories": ["Other", "Snippets"],
-  "keywords": ["ai", "prompt", "chatgpt", "claude", "cursor", "midjourney", "template"],
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "ai",
+    "prompt",
+    "chatgpt",
+    "claude",
+    "cursor",
+    "midjourney",
+    "template"
+  ],
   "icon": "icons/icon-128.png",
   "repository": {
     "type": "git",
@@ -17,7 +28,9 @@
   },
   "homepage": "https://jiejuefuyou.github.io/prompts.html",
   "main": "./src/extension.js",
-  "extensionKind": ["ui"],
+  "extensionKind": [
+    "ui"
+  ],
   "activationEvents": [
     "onCommand:promptvault.open",
     "onCommand:promptvault.insert",
@@ -59,8 +72,12 @@
   "scripts": {
     "vscode:prepublish": "npm run verify",
     "test": "node --test tests/*.test.cjs",
+    "test:extension-host": "node scripts/run-extension-host-tests.cjs",
     "lint": "node --check src/core.js && node --check src/extension.js && node scripts/verify-extension.cjs",
     "verify": "npm run lint && npm test"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@vscode/test-electron": "^3.1.0"
+  }
 }
