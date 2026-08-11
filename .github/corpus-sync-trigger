@@ -1,3 +1,4 @@
 canonical=promptvault-wechat-miniprogram@2f0ed5f319b2475fc3375f11cd0f43cb998bb39d
 expected_prompts=160
 expected_sha256=4e717ddda81eef3bf27c860b9a1142d0e9702150e2799d8f27bbcf4051470098
+attempt=2-normalized
