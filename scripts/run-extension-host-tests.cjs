@@ -41,7 +41,16 @@ async function main() {
       });
     }
   } finally {
-    fs.rmSync(stateRoot, { recursive: true, force: true });
+    // On Windows runTests() can resolve just before Electron/WebView releases
+    // its profile handles. A one-shot rm then turns two passing host runs into
+    // an EPERM failure and leaves the temp tree behind. Node's recursive rm
+    // retry contract handles exactly this bounded transient-lock window.
+    fs.rmSync(stateRoot, {
+      recursive: true,
+      force: true,
+      maxRetries: 20,
+      retryDelay: 100,
+    });
   }
 }
 
