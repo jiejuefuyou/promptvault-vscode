@@ -1,0 +1,21 @@
+{
+  "name": "promptvault-test-virtual-fs",
+  "displayName": "PromptVault test-only virtual workspace",
+  "description": "Test fixture: an in-memory pvtest: file system that records every access. Never packaged.",
+  "publisher": "promptvault-tests",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onFileSystem:pvtest"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  }
+}
